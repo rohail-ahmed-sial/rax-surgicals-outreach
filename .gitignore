@@ -1,0 +1,23 @@
+# your data and secrets (leads database, mailbox logins, AI keys, backups)
+data/
+*.db
+*.sqlite*
+.env
+
+# Python caches and the downloaded runtime
+__pycache__/
+*.pyc
+python/
+runtime/
+
+# build output: publish these as GitHub Release files instead
+build/
+dist/
+*.exe
+*.zip
+*.pdf
+
+# test screenshots and OS junk
+tests/shots/
+.DS_Store
+Thumbs.db

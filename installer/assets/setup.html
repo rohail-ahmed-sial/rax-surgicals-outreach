@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAX Surgicals Outreach Setup</title>
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<style>
+@font-face { font-family: "Atkinson Hyperlegible Next"; src: url("/assets/atkinson-hyperlegible-next.woff2") format("woff2"); font-weight: 200 800; }
+@font-face { font-family: "Charis SIL"; src: url("/assets/charis-sil-bold.woff2") format("woff2"); font-weight: 700; }
+:root {
+  --bg: #F4F8FA; --surface: #fff; --sunk: #EDF2F6; --line: #D9E2EC; --ink: #102A43; --ink-2: #486581; --ink-3: #6B7F94;
+  --navy: #0B2D4D; --emerald: #16A6A1; --emerald-ink: #0E7470; --emerald-soft: #E1F4F3; --danger: #B42318; --danger-soft: #FDECEA;
+  --font: "Atkinson Hyperlegible Next", "Segoe UI", system-ui, sans-serif; --display: "Charis SIL", Georgia, serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); display: flex; flex-direction: column; }
+header { background: var(--navy); color: #fff; padding: 22px 32px; display: flex; align-items: center; gap: 14px; }
+header svg { width: 44px; height: 44px; border-radius: 11px; box-shadow: 0 0 0 1px rgba(255,255,255,.12); flex: none; }
+header b { display: block; font: 700 21px/1.1 var(--display); }
+header span { display: block; font-size: 13.5px; color: #A9BCCD; margin-top: 4px; }
+main { flex: 1; padding: 26px 32px 18px; overflow: auto; }
+h1 { font: 700 26px/1.2 var(--display); margin: 0 0 6px; }
+p.lead { color: var(--ink-2); margin: 0 0 20px; max-width: 58ch; }
+.opt { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px; margin-bottom: 10px; cursor: pointer; }
+.opt input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--emerald-ink); flex: none; }
+.opt b { display: block; font-weight: 600; }
+.opt small { color: var(--ink-2); font-size: 13.5px; }
+.where { font-size: 13px; color: var(--ink-3); margin: 14px 0 0; }
+.where code { font-family: inherit; color: var(--ink-2); }
+footer { display: flex; gap: 10px; align-items: center; padding: 14px 32px 20px; border-top: 1px solid var(--line); background: var(--surface); }
+.spacer { flex: 1; font-size: 13px; color: var(--ink-3); }
+button { font: 600 14.5px var(--font); border-radius: 8px; padding: 10px 18px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+button:hover { border-color: var(--ink-3); }
+button.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+button.primary:hover { background: #0F3A61; }
+button:disabled { opacity: .55; cursor: default; }
+button:focus-visible, .opt:focus-within { outline: 3px solid rgba(18,110,155,.35); outline-offset: 2px; }
+ol.steps { list-style: none; margin: 4px 0 0; padding: 0; }
+ol.steps li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+ol.steps li:first-child { border-top: 0; }
+.mark { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; margin-top: 1px; }
+.wait .mark { border: 2px solid var(--line); }
+.run .mark { border: 2.5px solid var(--sunk); border-top-color: var(--emerald); animation: spin .8s linear infinite; }
+.done .mark, .skip .mark { background: var(--emerald-soft); color: var(--emerald-ink); }
+.fail .mark { background: var(--danger-soft); color: var(--danger); }
+.wait .lbl { color: var(--ink-3); }
+.lbl b { font-weight: 600; }
+.lbl small { display: block; color: var(--ink-2); font-size: 13px; overflow-wrap: anywhere; }
+.fail .lbl small { color: var(--danger); }
+.lbl { display: block; min-width: 0; }
+.bar { display: block; height: 6px; background: var(--sunk); border-radius: 99px; overflow: hidden; margin-top: 7px; max-width: 420px; }
+.bar i { display: block; height: 100%; background: var(--emerald); width: 0; transition: width .2s; }
+.ready { text-align: center; padding: 18px 0 0; }
+.ready .big { width: 64px; height: 64px; border-radius: 50%; background: var(--emerald-soft); color: var(--emerald-ink); display: inline-grid; place-items: center; margin-bottom: 14px; }
+.ready .big svg { width: 32px; height: 32px; }
+.ready p { color: var(--ink-2); max-width: 52ch; margin: 6px auto 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .run .mark { animation: none; border-top-color: var(--emerald); } }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#15466F"/><g fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 11.5l17 17" stroke="#fff"/><path d="M11.5 28.5 28 12M20.6 11.5h7.9v7.9" stroke="#2BC0B9"/></g><circle cx="20" cy="20" r="3.6" fill="#fff" stroke="#15466F" stroke-width="1.8"/></svg>
+  <div><b>RAX Surgicals Outreach</b><span>Find buyers. Email them. Turn replies into orders.</span></div>
+</header>
+<main>
+  <section id="v-start">
+    <h1 id="title">Install RAX Surgicals Outreach</h1>
+    <p class="lead" id="lead">It installs for your Windows user only, so no administrator rights are needed.</p>
+    <label class="opt"><input type="checkbox" id="o-desktop" checked><span><b>Put an icon on the desktop</b><small>It is also added to the Start menu.</small></span></label>
+    <label class="opt"><input type="checkbox" id="o-auto" checked><span><b>Start with Windows</b><small>Keeps sending emails at the right time in the background, even when its window is closed.</small></span></label>
+    <p class="where" id="where"></p>
+  </section>
+  <section id="v-run" hidden>
+    <h1 id="run-title">Installing…</h1>
+    <ol class="steps" id="steps"></ol>
+  </section>
+  <section id="v-done" class="ready" hidden>
+    <span class="big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+    <h1 id="done-title">RAX Surgicals Outreach is installed</h1>
+    <p>Open it from the Start menu or the desktop icon. It opens in its own window. To stop it completely, use the power button at the bottom of its menu.</p>
+  </section>
+</main>
+<footer>
+  <span class="spacer" id="ver"></span>
+  <button id="b-cancel">Cancel</button>
+  <button id="b-go" class="primary">Install</button>
+</footer>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+let info = {}, timer = null, state = 'idle';
+const post = (u, b) => fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b || {}) }).then(r => r.json());
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+async function start() {
+  info = await (await fetch('/api/info', { cache: 'no-store' })).json();
+  $('#ver').textContent = 'Version ' + info.version;
+  const update = !!info.installedVersion;
+  $('#title').textContent = update ? 'Update RAX Surgicals Outreach' : 'Install RAX Surgicals Outreach';
+  $('#b-go').textContent = update ? 'Update' : 'Install';
+  if (update) $('#lead').textContent = info.legacy
+    ? `${info.legacyName} is now called RAX Surgicals Outreach. The update moves your leads, emails and settings to its new folder.`
+    : 'This replaces the program files. Your leads, emails and settings are kept.';
+  $('#o-auto').checked = !!info.autostart;
+  $('#where').innerHTML = `The program goes to <code>${esc(info.installDir)}</code> and your data to <code>${esc(info.dataDir)}</code>.`
+    + (info.runtimeReady ? '' : ' Setup downloads Python (about 11 MB) from python.org, so an internet connection is needed.');
+  $('#b-go').focus();
+  setInterval(() => { if (state !== 'running') fetch('/api/status', { cache: 'no-store' }).catch(() => {}); }, 1500);   // tells setup the window is open
+}
+
+function paint(s) {
+  state = s.state;
+  $('#v-start').hidden = s.state !== 'idle';
+  $('#v-run').hidden = !(s.state === 'running' || s.state === 'error');
+  $('#v-done').hidden = s.state !== 'done';
+  $('#run-title').textContent = s.state === 'error' ? 'Setup stopped' : (info.installedVersion ? 'Updating…' : 'Installing…');
+  if (s.steps) $('#steps').innerHTML = s.steps.map(x => `<li class="${x.state}"><span class="mark">${x.state === 'done' || x.state === 'skip' ? '✓' : x.state === 'fail' ? '!' : ''}</span>
+      <span class="lbl"><b>${esc(x.label)}</b>${x.detail ? `<small>${esc(x.detail)}</small>` : ''}${x.key === 'python' && x.state === 'run' && s.progress > 0 ? `<span class="bar"><i style="width:${Math.round(s.progress * 100)}%"></i></span>` : ''}</span></li>`).join('');
+  const go = $('#b-go'), cancel = $('#b-cancel');
+  if (s.state === 'running') { go.disabled = true; go.textContent = info.installedVersion ? 'Updating…' : 'Installing…'; cancel.hidden = true; }
+  if (s.state === 'error') { go.disabled = false; go.textContent = 'Try again'; cancel.hidden = false; cancel.textContent = 'Close'; }
+  if (s.state === 'done') { go.disabled = false; go.textContent = 'Open RAX Surgicals Outreach'; cancel.hidden = false; cancel.textContent = 'Close'; $('#done-title').textContent = info.installedVersion ? 'RAX Surgicals Outreach is updated' : 'RAX Surgicals Outreach is installed'; go.focus(); }
+}
+
+async function poll() {
+  try { const s = await (await fetch('/api/status', { cache: 'no-store' })).json(); paint(s); if (s.state !== 'running') { clearInterval(timer); timer = null; } }
+  catch (e) { /* setup ended */ }
+}
+
+$('#b-go').onclick = async () => {
+  if (state === 'done') { await post('/api/open'); setTimeout(() => window.close(), 400); return; }
+  await post('/api/install', { desktop: $('#o-desktop').checked, autostart: $('#o-auto').checked });
+  paint({ state: 'running', steps: [] });
+  poll(); if (!timer) timer = setInterval(poll, 400);
+};
+$('#b-cancel').onclick = async () => { try { await post('/api/close'); } catch (e) {} window.close(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && state !== 'running') $('#b-cancel').click(); });
+start();
+</script>
+</body>
+</html>
